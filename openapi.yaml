@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: Recipe Management Service
+  description: Recipe Management API for EECS 497
+  version: 2.0.0
+servers:
+  - url: http://localhost:3000/
+    description: Local API
+tags:
+  - name: Recipes
+    description: Recipe Operations
+paths:
+  /recipe/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: Recipe Id
+        required: true
+        schema:
+          type: number
+    get:
+      summary: Get Recipe Info
+      description: Get the full status of a recipe
+
+      responses:
+        '200':
+          description: Full status of recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+    post:
+      summary: Create a Recipe
+      description: Create a new recipe if it does not already exist
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Recipe is malformed
+          
+components:
+  schemas:
+    Recipe:
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        creator:
+          $ref: '#/components/schemas/User'
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Step'
+    SetContainerRunningRequest:
+      required:
+        - running
+      properties:
+        running:
+          type: boolean
+    CreateContainerRequest:
+      required:
+        - volumes
+        - type
+      properties:
+        type:
+          type: string
+        volumes:
+          additionalProperties:
+            type: string
+    User:
+      properties:
+        name:
+          type: string
+        id:
+          type: number
+    Ingredient:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume'
+    Volume:
+      properties:
+        unit:
+          type: string
+        value:
+          type: number
+    Step:
+      properties:
+        heading:
+          type: string
+        equipment:
+          $ref: '#/components/schemas/Equipment'
+        description:
+          type: string
+    Equipment:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Error:
+      properties:
+        statusCode:
+          type: number
+        statusMessage:
+          type: string
+
+  responses:
+    404NotFound:
+      description: The specified recipe was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
