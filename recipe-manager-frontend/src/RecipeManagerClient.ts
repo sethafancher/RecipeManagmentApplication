@@ -57,14 +57,17 @@ const getRecipe = async (recipeId: number): Promise<Recipe> => {
   return await axios.get(`${baseUrl}/api/recipe/${recipeId}`);
 };
 
+// Token will arrive as a header with key "Authorization" and value "Bearer {TOKEN}"
 const getMyRecipes = async (token: UserToken): Promise<Recipe[]> => {
   return await axios.get(`${baseUrl}/api/recipes/mine`, getAuth(token));
 };
 
+// Token will arrive as a header with key "Authorization" and value "Bearer {TOKEN}"
 const createRecipe = async (recipe: Recipe, token: UserToken) => {
   await axios.post(`${baseUrl}/api/recipe`, recipe, getAuth(token));
 };
 
+// Needs to return any string (a JWT would be cool) that is unique for the user's login and can be verified by the backend later
 const login = async (request: LoginRequest): Promise<UserToken> => {
   return ((await axios.post(`${baseUrl}/api/login`, request)) as LoginResponse)
     .token;
