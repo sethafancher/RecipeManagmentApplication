@@ -41,6 +41,19 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: data.get("email"),
+        password: data.get("password"),
+      }),
+    };
+    fetch("/api/login", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.msg);
+      });
   };
 
   return (
