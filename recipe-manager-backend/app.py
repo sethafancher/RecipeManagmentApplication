@@ -10,7 +10,7 @@ def get_db_connection():
     return connection
 
 # Example GET route for /recipe/<recipe_id>
-@app.route("/recipe/<recipe_id>")
+@app.route("/api/recipe/<recipe_id>")
 def get_recipe(recipe_id):
     connection = get_db_connection()
     test_recipe = connection.execute('SELECT * FROM Recipe WHERE recipe_id = ?', (recipe_id,)).fetchall()
