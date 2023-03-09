@@ -33,7 +33,7 @@ export interface User {
   username: string;
   firstName: string;
   lastName: string;
-  userId: string;
+  userId: number;
 }
 
 export interface LoginRequest {
@@ -55,7 +55,7 @@ const baseUrl = "http://localhost:3000";
 const getAuth = (token: UserToken): AxiosRequestConfig<Recipe> => {
   return {
     headers: {
-      Authorization: token,
+      Authorization: 'Bearer ' + token,
     },
   };
 };
