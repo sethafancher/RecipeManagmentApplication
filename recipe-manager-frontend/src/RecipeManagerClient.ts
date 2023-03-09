@@ -4,7 +4,7 @@ type UserToken = string;
 
 export interface Step {
   title: string;
-  instructions: string;
+  description: string;
 }
 
 export interface Ingredient {
@@ -14,12 +14,19 @@ export interface Ingredient {
   unit: string;
 }
 
+export interface Equipment {
+  name: string;
+  description: string;
+}
+
 export interface Recipe {
+  recipeId: number;
   title: string;
+  creator: number;
   description: string;
   ingredients: Ingredient[];
+  equipment: Equipment[];
   steps: Step[];
-  recipeId: number;
 }
 
 export interface User {

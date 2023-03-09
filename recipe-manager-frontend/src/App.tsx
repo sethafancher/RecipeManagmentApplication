@@ -6,6 +6,7 @@ import "./App.css";
 
 function App() {
   console.log(getRecipe(1));
+  console.log(getRecipe(2));
   return (
     <div className="App">
       <SignIn />

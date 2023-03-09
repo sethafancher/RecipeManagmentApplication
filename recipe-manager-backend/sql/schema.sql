@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS Recipe_Step;
 CREATE TABLE User (
     user_id INTEGER PRIMARY KEY,
     first_name TEXT NOT NULL,
-    last_name TEXT,
+    last_name TEXT NOT NULL,
     username TEXT NOT NULL,
     password TEXT NOT NULL
 );
@@ -26,6 +26,7 @@ CREATE TABLE Recipe_Ingredient (
     ingredient_id INTEGER,
     recipe_id INTEGER,
     name TEXT NOT NULL,
+    description TEXT,
     amount REAL NOT NULL,
     unit TEXT,
     PRIMARY KEY (ingredient_id, recipe_id),
@@ -44,11 +45,8 @@ CREATE TABLE Recipe_Equipment (
 CREATE TABLE Recipe_Step (
     step_id INTEGER,
     recipe_id INTEGER,
-    ingredient_id INTEGER,
-    equipment_id INTEGER,
-    description TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
     PRIMARY KEY (step_id, recipe_id),
-    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE,
-    FOREIGN KEY (ingredient_id) REFERENCES Recipe_Ingredient(ingredient_id),
-    FOREIGN KEY (equipment_id) REFERENCES Recipe_Equipment(equipment_id)
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE
 );
