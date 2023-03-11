@@ -12,48 +12,37 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useNavigate, Navigate } from "react-router-dom";
+import { useLoginState } from "../LoginState";
+import { login } from "../RecipeManagerClient";
 
 const theme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  let [loginState, setLoginState] = useLoginState();
+  if (loginState !== undefined) {
+    return <Navigate to="/home" />;
+  }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
+      username: data.get("username"),
       password: data.get("password"),
     });
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: data.get("email"),
-        password: data.get("password"),
-      }),
-    };
-    fetch("/api/login", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.msg);
-      });
+    if (data.get("username") == null || data.get("password") == null) {
+      return;
+    }
+
+    login(
+      data.get("username")?.toString() || "",
+      data.get("password")?.toString() || ""
+    ).then((session: string) => {
+      console.log(session);
+      setLoginState(session);
+      navigate("/home");
+    }); // Wrong user/password handling?
   };
 
   return (
@@ -84,10 +73,10 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
             />
             <TextField
@@ -113,20 +102,19 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Link href="/createaccount" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

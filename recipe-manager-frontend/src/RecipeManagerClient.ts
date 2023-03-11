@@ -55,7 +55,7 @@ const baseUrl = "http://localhost:3000";
 const getAuth = (token: UserToken): AxiosRequestConfig<Recipe> => {
   return {
     headers: {
-      Authorization: 'Bearer ' + token,
+      Authorization: "Bearer " + token,
     },
   };
 };
@@ -75,9 +75,16 @@ const createRecipe = async (recipe: Recipe, token: UserToken) => {
 };
 
 // Needs to return any string (a JWT would be cool) that is unique for the user's login and can be verified by the backend later
-const login = async (request: LoginRequest): Promise<UserToken> => {
-  return ((await axios.post(`${baseUrl}/api/login`, request)) as LoginResponse)
-    .token;
+const login = async (
+  username: string,
+  password: string
+): Promise<UserToken> => {
+  let resp = await axios.post<LoginResponse>(`${baseUrl}/api/login`, {
+    username,
+    password,
+  });
+  console.log(resp);
+  return (resp.data as LoginResponse).token;
 };
 
 const createUser = async (request: CreateUserRequest): Promise<UserToken> => {

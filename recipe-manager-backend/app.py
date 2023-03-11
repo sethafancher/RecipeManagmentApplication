@@ -132,11 +132,11 @@ def login():
     ).fetchall()
     user_id = [dict(i) for i in user_id]
     if len(user_id) == 0:
-        return Response("Error: Wrong username or password", status=500, mimetype='application/json')
+        return Response("Error: Wrong username or password", status=400, mimetype='application/json')
     access_token = create_access_token(identity=str(user_id[0]))
     connection.commit()
     connection.close()
-    return jsonify(access_token)
+    return jsonify({ "token": access_token})
 
 # POST route for /api/user/create
 @app.route("/api/user/create", methods = ['POST'])

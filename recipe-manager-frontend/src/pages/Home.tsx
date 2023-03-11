@@ -1,8 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { useLoginState } from "../LoginState";
 
 function Home() {
-  return <></>;
+  let [loginState, setLoginState] = useLoginState();
+  return <>{loginState}</>;
 }
 
 export default Home;
