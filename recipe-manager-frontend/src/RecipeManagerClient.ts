@@ -85,3 +85,8 @@ const createUser = async (request: CreateUserRequest): Promise<UserToken> => {
 };
 
 export { getRecipe, getMyRecipes, createRecipe, login, createUser };
+
+// /home
+// /recipe/{recipeId}
+// /login
+// /createaccount
