@@ -9,8 +9,6 @@ import { getRecipe } from "./RecipeManagerClient";
 import "./App.css";
 
 function App() {
-  console.log(getRecipe(1));
-  console.log(getRecipe(2));
   return (
     <BrowserRouter>
       <Routes>

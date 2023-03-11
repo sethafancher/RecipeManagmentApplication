@@ -61,12 +61,14 @@ const getAuth = (token: UserToken): AxiosRequestConfig<Recipe> => {
 };
 
 const getRecipe = async (recipeId: number): Promise<Recipe> => {
-  return await axios.get(`${baseUrl}/api/recipe/${recipeId}`);
+  return (await axios.get<Recipe>(`${baseUrl}/api/recipe/${recipeId}`)).data;
 };
 
 // Token will arrive as a header with key "Authorization" and value "Bearer {TOKEN}"
 const getMyRecipes = async (token: UserToken): Promise<Recipe[]> => {
-  return await axios.get(`${baseUrl}/api/recipes/mine`, getAuth(token));
+  return (
+    await axios.get<Recipe[]>(`${baseUrl}/api/recipes/mine`, getAuth(token))
+  ).data;
 };
 
 // Token will arrive as a header with key "Authorization" and value "Bearer {TOKEN}"
