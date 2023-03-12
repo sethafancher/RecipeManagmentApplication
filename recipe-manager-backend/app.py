@@ -3,7 +3,7 @@ import jwt
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
 import sqlite3
-import json
+import ast
 
 app = Flask(__name__)
 
@@ -71,7 +71,7 @@ def get_recipe(recipe_id):
 @app.route("/api/recipes/mine")
 @jwt_required()
 def get_my_recipes():
-    user_id = get_jwt_identity()
+    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
     connection = get_db_connection()
     recipes = connection.execute(
         'SELECT DISTINCT R.recipe_id ' +
@@ -88,7 +88,7 @@ def get_my_recipes():
 @app.route("/api/recipe", methods = ['POST'])
 @jwt_required()
 def create_recipe():
-    user_id = get_jwt_identity()
+    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
     recipe_dict = dict(request.get_json())
     connection = get_db_connection()
     try:
