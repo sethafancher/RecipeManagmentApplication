@@ -20,7 +20,7 @@ export interface Equipment {
 }
 
 export interface Recipe {
-  recipeId: number;
+  recipe_id: number;
   title: string;
   creator: number;
   description: string;

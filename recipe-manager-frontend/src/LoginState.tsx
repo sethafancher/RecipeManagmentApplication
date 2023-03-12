@@ -12,6 +12,8 @@ function useLoginState(): [string | undefined, (session: string) => void] {
       Cookies.get(sessionCookieName) != undefined
     ) {
       setLoginToken(Cookies.get(sessionCookieName));
+    } else if (loginToken == undefined) {
+      setLoginToken("");
     }
   }, []);
 
