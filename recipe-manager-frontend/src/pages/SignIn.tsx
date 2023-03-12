@@ -21,7 +21,7 @@ const theme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   let [loginState, setLoginState] = useLoginState();
-  if (loginState !== undefined) {
+  if (loginState !== undefined && loginState !== "") {
     return <Navigate to="/home" />;
   }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

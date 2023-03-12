@@ -133,7 +133,7 @@ def login():
     user_id = [dict(i) for i in user_id]
     if len(user_id) == 0:
         return Response("Error: Wrong username or password", status=400, mimetype='application/json')
-    access_token = create_access_token(identity=str(user_id[0]))
+    access_token = create_access_token(identity=str(user_id[0]), expires_delta=False)
     connection.commit()
     connection.close()
     return jsonify({ "token": access_token})
