@@ -10,11 +10,16 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useLoginState } from "../LoginState";
 
@@ -77,13 +82,6 @@ function Dynamic<T>({
   console.log(state);
   return (
     <>
-      <p>{title}</p>
-      <button
-        type="button"
-        onClick={() => setState((oldState) => [...oldState, createNew()])}
-      >
-        +
-      </button>
       {state.map((val, index) => {
         return (
           <Component
@@ -94,6 +92,15 @@ function Dynamic<T>({
           />
         );
       })}
+      <Grid item xs={12} sm={6}>
+        <IconButton
+          onClick={() => setState((oldState) => [...oldState, createNew()])}
+          color="primary"
+          aria-label="add to shopping cart"
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
+      </Grid>
     </>
   );
 }
@@ -164,24 +171,30 @@ const EquipmentFormComponent = ({
 }: DynamicFormProps<Equipment>) => {
   return (
     <>
-      <label>
-        Name{" "}
-        <input
-          type="text"
+      <Grid item xs={12} sm={6}>
+        <TextField
+          required
+          id="equipment_name"
           name="equipment_name"
+          label="Name"
           value={state[index].name}
           onChange={setStateProperty(index, "name")}
-        ></input>
-      </label>
-      <label>
-        Description{" "}
-        <input
-          type="text"
+          fullWidth
+          variant="standard"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <TextField
+          required
+          id="equipment_description"
           name="equipment_description"
+          label="Description"
           value={state[index].description}
           onChange={setStateProperty(index, "description")}
-        ></input>
-      </label>
+          fullWidth
+          variant="standard"
+        />
+      </Grid>
     </>
   );
 };
@@ -193,23 +206,30 @@ const StepFormComponent = ({
 }: DynamicFormProps<Step>) => {
   return (
     <>
-      <label>Name </label>
-      <input
-        key={"title" + index}
-        type="text"
-        name="step_name"
-        value={state[index].title}
-        onChange={setStateProperty(index, "title")}
-      ></input>
-
-      <label>Description </label>
-      <input
-        key={"description" + index}
-        type="text"
-        name="step_description"
-        value={state[index].description}
-        onChange={setStateProperty(index, "description")}
-      ></input>
+      <Grid item xs={12} sm={6}>
+        <TextField
+          required
+          id="step_name"
+          name="step_name"
+          label="Name"
+          value={state[index].title}
+          onChange={setStateProperty(index, "title")}
+          fullWidth
+          variant="standard"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <TextField
+          required
+          id="step_description"
+          name="sstep_description"
+          label="Description"
+          value={state[index].description}
+          onChange={setStateProperty(index, "description")}
+          fullWidth
+          variant="standard"
+        />
+      </Grid>
     </>
   );
 };
@@ -224,12 +244,12 @@ export default function CreateRecipe() {
   const [equipment, setEquipment] = React.useState<Equipment[]>([
     { name: "", description: "" },
   ]);
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const [loginState, setLoginState] = useLoginState();
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+  const handleSubmit = () => {
     const newRecipe: Recipe = {
       title,
       description,
@@ -239,7 +259,11 @@ export default function CreateRecipe() {
       creator: -1, // overwritten by backend
       recipe_id: -1, // overwritten by backend
     };
-    loginState && loginState != "" && createRecipe(newRecipe, loginState);
+    if (loginState && loginState != "") {
+      createRecipe(newRecipe, loginState).then((recipe) =>
+        navigate(`/recipe/${recipe.recipe_id}`)
+      );
+    }
   };
   if (loginState == "") return <Navigate to="/" />;
   return (
@@ -270,41 +294,45 @@ export default function CreateRecipe() {
           <Typography component="h1" variant="h4" align="center">
             Create your recipe
           </Typography>
+          <Box m={1} pt={1}>
+            <Divider />
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            Enter Recipe Info
+          </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <Typography variant="h6" gutterBottom>
-                Recipe Info
-              </Typography>
+              <TextField
+                required
+                id="recipeTitle"
+                name="title"
+                label="Recipe title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                fullWidth
+                variant="standard"
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label>
-                Recipe Title
-                <input
-                  type="text"
-                  name="title"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
-                ></input>
-              </label>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <label>
-                Recipe Description
-                <input
-                  type="text"
-                  name="description"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                ></input>
-              </label>
+              <TextField
+                required
+                id="recipeDescription"
+                name="description"
+                label="Recipe description"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                fullWidth
+                variant="standard"
+              />
             </Grid>
           </Grid>
+          <Box m={1} pt={1}>
+            <Divider />
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            Enter Ingredients
+          </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6" gutterBottom>
-                Enter Ingredients
-              </Typography>
-            </Grid>
             {
               <Dynamic
                 title="Ingredients"
@@ -317,9 +345,14 @@ export default function CreateRecipe() {
                 }}
               />
             }
-            <Typography variant="h6" gutterBottom>
-              Enter Equipment
-            </Typography>
+          </Grid>
+          <Box m={1} pt={1}>
+            <Divider />
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            Enter Equipment
+          </Typography>
+          <Grid container spacing={3}>
             {
               <Dynamic
                 title="Equipment"
@@ -332,9 +365,14 @@ export default function CreateRecipe() {
                 }}
               />
             }
-            <Typography variant="h6" gutterBottom>
-              Enter Steps
-            </Typography>
+          </Grid>
+          <Box m={1} pt={1}>
+            <Divider />
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            Enter Steps
+          </Typography>
+          <Grid container spacing={3}>
             {
               <Dynamic
                 title="Step"
@@ -347,8 +385,13 @@ export default function CreateRecipe() {
                 }}
               />
             }
-            <button>Create Recipe</button>
           </Grid>
+          <Box m={1} pt={1}>
+            <Divider />
+          </Box>
+          <Button variant="contained" onClick={handleSubmit}>
+            Create
+          </Button>
         </Paper>
       </Container>
     </>

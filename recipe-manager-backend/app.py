@@ -91,35 +91,41 @@ def create_recipe():
     user_id = ast.literal_eval(get_jwt_identity())["user_id"]
     recipe_dict = dict(request.get_json())
     connection = get_db_connection()
+    recipe_id = None
     try:
-        connection.execute("INSERT INTO Recipe (recipe_id, title, creator, description)" +
-                            "VALUES (?, ?, ?, ?);",
-                            (recipe_dict["recipeId"],  recipe_dict["title"], user_id,
+        result = connection.execute("INSERT INTO Recipe (title, creator, description)" +
+                            "VALUES (?, ?, ?);",
+                            (recipe_dict["title"], user_id,\
                              recipe_dict["description"],))
-    except: 
+        recipe_id = result.lastrowid
+        
+    except Exception as e:
+        print(e) 
         return Response("Error: recipeId aready exists", status=500, mimetype='application/json')
     ing_count = 0
     for ingredient in recipe_dict["ingredients"]:
         connection.execute("INSERT INTO Recipe_Ingredient (ingredient_id, recipe_id, name, description, amount, unit)" +
                             "VALUES (?, ?, ?, ?, ?, ?);",
-                            (ing_count, recipe_dict["recipeId"],  ingredient["name"], ingredient["description"],
+                            (ing_count, recipe_id,  ingredient["name"], ingredient["description"],
                              ingredient["amount"], ingredient["unit"],))
         ing_count += 1
     eq_count = 0
     for equipment in recipe_dict["equipment"]:
         connection.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name, description)" +
                             "VALUES (?, ?, ?, ?);",
-                            (eq_count, recipe_dict["recipeId"],  equipment["name"], equipment["description"],))
+                            (eq_count, recipe_id,  equipment["name"], equipment["description"],))
         eq_count += 1
     step_count = 0
     for step in recipe_dict["steps"]:
         connection.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title, description)" +
                             "VALUES (?, ?, ?, ?);",
-                            (step_count, recipe_dict["recipeId"],  step["title"], step["description"],))
+                            (step_count, recipe_id,  step["title"], step["description"],))
         step_count += 1
+    recipe_dict["creator"] = user_id
+    recipe_dict["recipe_id"] = recipe_id
     connection.commit()
     connection.close()
-    return Response(status=200)
+    return jsonify(recipe_dict)
 
 # POST route for /api/login
 @app.route("/api/login", methods = ['POST'])

@@ -10,10 +10,10 @@ cur = connection.cursor()
 cur.execute("INSERT INTO User (user_id, first_name, last_name, username, password)" +
             "VALUES (1, 'Seth', 'Fancher', 'sfancher', 'password');")
 
-cur.execute("INSERT INTO Recipe (recipe_id, title, creator, description)" +
-            "VALUES (1, 'Chicken', 1, 'My chicken recipe');")
-cur.execute("INSERT INTO Recipe (recipe_id, title, creator, description)" +
-            "VALUES (2, 'Steak', 1, 'My steak recipe');")
+cur.execute("INSERT INTO Recipe (title, creator, description)" +
+            "VALUES ('Chicken', 1, 'My chicken recipe');")
+cur.execute("INSERT INTO Recipe (title, creator, description)" +
+            "VALUES ('Steak', 1, 'My steak recipe');")
 
 cur.execute("INSERT INTO Recipe_Ingredient (ingredient_id, recipe_id, name, description, amount, unit)" +
             "VALUES (1, 1, 'Sauce', 'Red sauce', 4, 'cups');")

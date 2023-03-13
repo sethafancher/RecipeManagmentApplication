@@ -15,7 +15,7 @@ CREATE TABLE User (
 );
 
 CREATE TABLE Recipe (
-    recipe_id INTEGER PRIMARY KEY,
+    recipe_id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     creator INTEGER NOT NULL,
     description TEXT,
