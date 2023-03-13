@@ -42,7 +42,7 @@ const RecipeView: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         <CssBaseline />
         <AppBar
           position="absolute"
-          color="default"
+          color="inherit"
           elevation={0}
           sx={{
             position: "relative",

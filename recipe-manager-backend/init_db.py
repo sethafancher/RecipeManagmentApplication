@@ -24,23 +24,23 @@ cur.execute("INSERT INTO Recipe_Ingredient (ingredient_id, recipe_id, name, desc
 cur.execute("INSERT INTO Recipe_Ingredient (ingredient_id, recipe_id, name, description, amount, unit)" +
             "VALUES (2, 2, 'Seasoning', 'Montreal steak', 6, 'dashes');")
 
-cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title)" +
-            "VALUES (1, 1, 'Prepare chicken');")
-cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title)" +
-            "VALUES (2, 1, 'Cook chicken');")
-cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title)" +
-            "VALUES (1, 2, 'Prepare steak');")
-cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title)" +
-            "VALUES (2, 2, 'Cook steak');")
+cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title, description)" +
+            "VALUES (1, 1, 'Prepare chicken', 'This is the first step');")
+cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title, description)" +
+            "VALUES (2, 1, 'Cook chicken', 'This is the second step');")
+cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title, description)" +
+            "VALUES (1, 2, 'Prepare steak', 'This is the first step');")
+cur.execute("INSERT INTO Recipe_Step (step_id, recipe_id, title, description)" +
+            "VALUES (2, 2, 'Cook steak', 'This is the second step');")
 
-cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name)" +
-            "VALUES (1, 1, 'Plate');")
-cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name)" +
-            "VALUES (2, 1, 'Knife');")
-cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name)" +
-            "VALUES (1, 2, 'Bowl');")
-cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name)" +
-            "VALUES (2, 2, 'Fork');")
+cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name, description)" +
+            "VALUES (1, 1, 'Plate', 'This is a plate');")
+cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name, description)" +
+            "VALUES (2, 1, 'Knife', 'This is a knife');")
+cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name, description)" +
+            "VALUES (1, 2, 'Bowl', 'This is a bowl');")
+cur.execute("INSERT INTO Recipe_Equipment (equipment_id, recipe_id, name, description)" +
+            "VALUES (2, 2, 'Fork', 'This is a fork');")
 
 
 connection.commit()
