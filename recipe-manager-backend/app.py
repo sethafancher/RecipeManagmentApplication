@@ -62,7 +62,7 @@ def get_recipe(recipe_id):
     connection = get_db_connection()
     recipe = get_rec(connection, recipe_id)
     if recipe == {}:
-        return Response("Error: Recipe id: " + recipe_id + " does not exist", status=500, mimetype='application/json')
+        return Response("Error: Recipe id: " + recipe_id + " does not exist", status=404, mimetype='application/json')
     connection.commit()
     connection.close()
     return jsonify(recipe)
@@ -99,9 +99,8 @@ def create_recipe():
                              recipe_dict["description"],))
         recipe_id = result.lastrowid
         
-    except Exception as e:
-        print(e) 
-        return Response("Error: recipeId aready exists", status=500, mimetype='application/json')
+    except Exception as e: 
+        return Response("Error: recipeId aready exists", status=409, mimetype='application/json')
     ing_count = 0
     for ingredient in recipe_dict["ingredients"]:
         connection.execute("INSERT INTO Recipe_Ingredient (ingredient_id, recipe_id, name, description, amount, unit)" +
@@ -138,7 +137,7 @@ def login():
     ).fetchall()
     user_id = [dict(i) for i in user_id]
     if len(user_id) == 0:
-        return Response("Error: Wrong username or password", status=400, mimetype='application/json')
+        return Response("Error: Wrong username or password", status=403, mimetype='application/json')
     access_token = create_access_token(identity=str(user_id[0]), expires_delta=False)
     connection.commit()
     connection.close()
@@ -156,7 +155,7 @@ def create_user():
                             (user_info["userId"],  user_info["firstName"], user_info["lastName"],
                              user_info["username"],  user_dict["password"],))
     except: 
-        return Response("Error: userId or username aready exists, or CreateUserRequest has NULL values", status=500, mimetype='application/json')
+        return Response("Error: userId or username aready exists", status=409, mimetype='application/json')
     access_token = create_access_token(identity=str(user_info["userId"]))
     connection.commit()
     connection.close()
