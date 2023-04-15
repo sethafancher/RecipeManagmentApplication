@@ -6,12 +6,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
+import Button from "@mui/material/Button";
 import ListSubheader from "@mui/material/ListSubheader";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import ShareIcon from '@mui/icons-material/Share';
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
@@ -114,6 +117,28 @@ const RecipeView: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
             </Collapse>
           </List>
           <StepsView stepList={recipe.steps} />
+          <Stack
+                sx={{ pt: 4 }}
+                direction="row"
+                spacing={1}
+                justifyContent="center"
+              >
+            <Button
+              onClick={() => {
+                const el = document.createElement('input');
+                el.value = window.location.href;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert("Link copied!")
+              }}
+              variant="contained"
+              startIcon={<ShareIcon />}
+              >
+              Share
+            </Button>
+          </Stack>
         </Paper>
       </Container>
       </ThemeProvider>
