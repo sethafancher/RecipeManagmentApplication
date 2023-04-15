@@ -6,10 +6,9 @@ import {
   Ingredient,
   Equipment,
 } from "../RecipeManagerClient";
+import Header from "../Header"
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -270,22 +269,7 @@ export default function CreateRecipe() {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar
-          position="absolute"
-          color="default"
-          elevation={0}
-          sx={{
-            position: "relative",
-            borderBottom: (t) => `1px solid ${t.palette.divider}`,
-          }}
-        >
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Create recipe
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </ThemeProvider>
+        <Header />
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
         <Paper
           variant="outlined"
@@ -394,6 +378,7 @@ export default function CreateRecipe() {
           </Button>
         </Paper>
       </Container>
+      </ThemeProvider>
     </>
   );
 }

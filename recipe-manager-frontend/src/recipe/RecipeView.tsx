@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Recipe } from "../RecipeManagerClient";
+import Header from "../Header"
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
-import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -40,22 +39,7 @@ const RecipeView: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar
-          position="absolute"
-          color="inherit"
-          elevation={0}
-          sx={{
-            position: "relative",
-            borderBottom: (t) => `1px solid ${t.palette.divider}`,
-          }}
-        >
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Recipe View
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </ThemeProvider>
+        <Header />
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
         <Paper
           variant="outlined"
@@ -132,6 +116,7 @@ const RecipeView: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           <StepsView stepList={recipe.steps} />
         </Paper>
       </Container>
+      </ThemeProvider>
     </>
   );
 };
