@@ -70,7 +70,6 @@ def get_recipe(recipe_id):
 # DELETE route for /api/recipe/<recipe_id>
 @app.route("/api/recipe/<recipe_id>", methods = ['DELETE'])
 def delete_recipe(recipe_id):
-    print(recipe_id)
     connection = get_db_connection()
     connection.execute(
         'DELETE FROM Recipe ' +
@@ -103,6 +102,25 @@ def get_my_recipes():
 def create_recipe():
     user_id = ast.literal_eval(get_jwt_identity())["user_id"]
     recipe_dict = dict(request.get_json())
+    seen = set()
+    # check for empty recipe title
+    if recipe_dict["title"] == "" or recipe_dict["title"] == " ":
+         return Response("Error: Empty recipe title", status=400, mimetype='application/json')
+    # check for empty steps
+    if recipe_dict["steps"] == [{'title': '', 'description': ''}]:
+         return Response("Error: Empty steps", status=400, mimetype='application/json')
+    # check for duplicate ingredients/equipment
+    for ingredient in recipe_dict["ingredients"]:
+        if ingredient["name"] in seen and ingredient["name"] != "":
+            return Response("Error: Duplicate ingredients", status=400, mimetype='application/json')
+        else:
+            seen.add(ingredient["name"])
+    seen.clear()
+    for equipment in recipe_dict["equipment"]:
+        if equipment["name"] in seen and equipment["name"] != "":
+            return Response("Error: Duplicate equipment", status=400, mimetype='application/json')
+        else:
+            seen.add(equipment["name"])
     connection = get_db_connection()
     recipe_id = None
     try:
