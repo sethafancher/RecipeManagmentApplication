@@ -14,9 +14,9 @@ const Header: React.FC<{}> = props => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <OutdoorGrillIcon sx={{ mr: 2 }} />
           <Typography variant="h6" component={Link} to="/home" sx={{ flexGrow: 1, textDecoration: 'none', color: 'white' }}>
-            Recipe Manager
+            <OutdoorGrillIcon sx={{ mr: 2 }} />
+            Home
           </Typography>
         </Toolbar>
       </AppBar>

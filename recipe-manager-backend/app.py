@@ -67,6 +67,19 @@ def get_recipe(recipe_id):
     connection.close()
     return jsonify(recipe)
 
+# DELETE route for /api/recipe/<recipe_id>
+@app.route("/api/recipe/<recipe_id>", methods = ['DELETE'])
+def delete_recipe(recipe_id):
+    print(recipe_id)
+    connection = get_db_connection()
+    connection.execute(
+        'DELETE FROM Recipe ' +
+        'WHERE recipe_id = ?;', (recipe_id,)
+    )
+    connection.commit()
+    connection.close()
+    return Response(status=204)
+
 # GET route for /api/recipes/mine
 @app.route("/api/recipes/mine")
 @jwt_required()
@@ -159,4 +172,4 @@ def create_user():
     access_token = create_access_token(identity=str(user_info["userId"]))
     connection.commit()
     connection.close()
-    return jsonify(access_token)
+    return jsonify({ "token": access_token })

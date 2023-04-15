@@ -3,7 +3,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { useLoginState } from "../LoginState";
 import RecipePreview from "../recipe/RecipePreview";
 import Header from "../Header";
-import { getMyRecipes, Recipe } from "../RecipeManagerClient";
+import { deleteRecipe, getMyRecipes, Recipe } from "../RecipeManagerClient";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -57,7 +58,7 @@ function Home() {
               color="text.primary"
               gutterBottom
             >
-              Your Recipes
+              My Recipes
             </Typography>
             <Typography
               variant="h5"
@@ -65,8 +66,8 @@ function Home() {
               color="text.secondary"
               paragraph
             >
-              See all your recipes below! Feel free to create new recipes and
-              share them with the world
+              Create new recipes and
+              share them with the world!
             </Typography>
             <Stack
               sx={{ pt: 4 }}
@@ -101,8 +102,18 @@ function Home() {
                       <Typography>{recipe.description}</Typography>
                     </CardContent>
                     <CardActions>
-                      <Button href={"/recipe/" + recipe.recipe_id} size="small">
+                      <Button href={"/recipe/" + recipe.recipe_id} variant="outlined" size="small">
                         View
+                      </Button>
+                      <Button 
+                        onClick={() => {if (loginState) {deleteRecipe(loginState, recipe.recipe_id)}}}
+                        href="/home"
+                        size="small" 
+                        variant="outlined"
+                        color="error"
+                        style={{ marginLeft: "auto "}}
+                        startIcon={<DeleteIcon />}>
+                        Delete
                       </Button>
                     </CardActions>
                   </Card>
