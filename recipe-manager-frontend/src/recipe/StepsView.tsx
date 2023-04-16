@@ -10,7 +10,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 
 const StepsView: React.FC<{ stepList: Step[] }> = ({ stepList }) => {
-  const [checked, setChecked] = React.useState([0]);
+  const [checked, setChecked] = React.useState<number[]>([]);
   const [opened, setOpened] = React.useState([1]);
 
   const handleChecked = (value: number) => () => {
