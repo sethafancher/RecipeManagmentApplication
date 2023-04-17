@@ -21,6 +21,8 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useLoginState } from "../LoginState";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 
 const theme = createTheme();
 
@@ -247,16 +249,20 @@ export default function CreateRecipe() {
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const [loginState, setLoginState] = useLoginState();
+  const [error, setError] = React.useState<string>();
 
   const handleSubmit = () => {
     if (!title || title.length === 0) {
-      // Require title
+      setError("Title is required for recipe creation");
+      return;
     }
     if (!description || description.length === 0) {
-      // Require Description
+      setError("Description is required for recipe creation");
+      return;
     }
     if (!ingredients || ingredients.length === 0) {
-      // Require at least one ingredient
+      setError("At least one ingredient is required");
+      return;
     } else {
       for (let ingredient of ingredients) {
         if (
@@ -264,20 +270,20 @@ export default function CreateRecipe() {
           ingredient.amount === 0 ||
           ingredient.description == ""
         ) {
-          // Require ingredients to be filled out
+          setError("Filling out all ingredients is required");
+          return;
         }
       }
     }
     if (!steps || steps.length == 0) {
-      // Require at least one step
+      setError("At least one step is required");
     } else {
       for (let step of steps) {
         if (step.title == "" || step.description == "") {
-          // Require steps to be filled out
+          setError("Filling out all steps is required");
         }
       }
     }
-    // Equipment is optional
     const newRecipe: Recipe = {
       title,
       description,
@@ -407,6 +413,19 @@ export default function CreateRecipe() {
             </Button>
           </Paper>
         </Container>
+        <Snackbar
+          open={error != undefined}
+          autoHideDuration={6000}
+          onClose={() => setError(undefined)}
+        >
+          <Alert
+            onClose={() => setError(undefined)}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
       </ThemeProvider>
     </>
   );
