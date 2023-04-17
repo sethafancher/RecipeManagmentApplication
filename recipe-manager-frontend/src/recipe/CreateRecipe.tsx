@@ -23,6 +23,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useLoginState } from "../LoginState";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 const theme = createTheme();
 
@@ -97,10 +98,24 @@ function Dynamic<T>({
         <IconButton
           onClick={() => setState((oldState) => [...oldState, createNew()])}
           color="primary"
-          aria-label="add to shopping cart"
+          aria-label="add entry"
         >
           <AddCircleOutlineIcon />
         </IconButton>
+        {state.length > 1 && (
+          <IconButton
+            onClick={() => {
+              setState((oldState) => {
+                if (oldState.length == 1) return oldState;
+                return oldState.slice(0, -1);
+              });
+            }}
+            color="error"
+            aria-label="delete entry"
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
+        )}
       </Grid>
     </>
   );
