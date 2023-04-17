@@ -180,14 +180,16 @@ def create_user():
     user_dict = dict(request.get_json())
     user_info = user_dict["user"]
     connection = get_db_connection()
+    user_id = None
     try:
-        connection.execute("INSERT INTO User (user_id, first_name, last_name, username, password)" +
-                            "VALUES (?, ?, ?, ?, ?);",
-                            (user_info["userId"],  user_info["firstName"], user_info["lastName"],
+        result = connection.execute("INSERT INTO User (first_name, last_name, username, password)" +
+                            "VALUES (?, ?, ?, ?);",
+                            (user_info["firstName"], user_info["lastName"],
                              user_info["username"],  user_dict["password"],))
+        user_id = result.lastrowid
     except: 
         return Response("Error: userId or username aready exists", status=409, mimetype='application/json')
-    access_token = create_access_token(identity=str(user_info["userId"]))
+    access_token = create_access_token(identity=str(user_id))
     connection.commit()
     connection.close()
     return jsonify({ "token": access_token })

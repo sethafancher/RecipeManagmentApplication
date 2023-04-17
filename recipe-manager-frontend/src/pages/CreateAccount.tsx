@@ -13,19 +13,44 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useNavigate, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createUser } from "../RecipeManagerClient";
+import { useLoginState } from "../LoginState";
 
 const theme = createTheme();
 
 export default function CreateAccount() {
+  const navigate = useNavigate();
+  let [loginState, setLoginState] = useLoginState();
+  if (loginState !== undefined && loginState !== "") {
+    return <Navigate to="/home" />;
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
+    const username = data.get("username")?.toString();
+    const password = data.get("password")?.toString();
+    const firstName = data.get("firstName")?.toString();
+    const lastName = data.get("lastName")?.toString();
+    if (username && password && firstName && lastName) {
+      createUser({
+        user: {
+          username: username,
+          firstName: firstName,
+          lastName: lastName,
+          userId: -1,
+        },
+        password: password,
+      }).then((session) => {
+        console.log(session);
+        setLoginState(session);
+        navigate("/home");
+      });
+    } else {
+      //TODO: validation
+    }
   };
 
   return (
