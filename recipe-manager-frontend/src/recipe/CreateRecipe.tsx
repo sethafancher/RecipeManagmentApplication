@@ -6,7 +6,7 @@ import {
   Ingredient,
   Equipment,
 } from "../RecipeManagerClient";
-import Header from "../Header"
+import Header from "../Header";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -21,6 +21,9 @@ import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useLoginState } from "../LoginState";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 const theme = createTheme();
 
@@ -95,10 +98,24 @@ function Dynamic<T>({
         <IconButton
           onClick={() => setState((oldState) => [...oldState, createNew()])}
           color="primary"
-          aria-label="add to shopping cart"
+          aria-label="add entry"
         >
           <AddCircleOutlineIcon />
         </IconButton>
+        {state.length > 1 && (
+          <IconButton
+            onClick={() => {
+              setState((oldState) => {
+                if (oldState.length == 1) return oldState;
+                return oldState.slice(0, -1);
+              });
+            }}
+            color="error"
+            aria-label="delete entry"
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
+        )}
       </Grid>
     </>
   );
@@ -247,8 +264,41 @@ export default function CreateRecipe() {
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const [loginState, setLoginState] = useLoginState();
+  const [error, setError] = React.useState<string>();
 
   const handleSubmit = () => {
+    if (!title || title.length === 0) {
+      setError("Title is required for recipe creation");
+      return;
+    }
+    if (!description || description.length === 0) {
+      setError("Description is required for recipe creation");
+      return;
+    }
+    if (!ingredients || ingredients.length === 0) {
+      setError("At least one ingredient is required");
+      return;
+    } else {
+      for (let ingredient of ingredients) {
+        if (
+          ingredient.name === "" ||
+          ingredient.amount === 0 ||
+          ingredient.description == ""
+        ) {
+          setError("Filling out all ingredients is required");
+          return;
+        }
+      }
+    }
+    if (!steps || steps.length == 0) {
+      setError("At least one step is required");
+    } else {
+      for (let step of steps) {
+        if (step.title == "" || step.description == "") {
+          setError("Filling out all steps is required");
+        }
+      }
+    }
     const newRecipe: Recipe = {
       title,
       description,
@@ -270,114 +320,127 @@ export default function CreateRecipe() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Header />
-      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+        <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+          <Paper
+            variant="outlined"
+            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+          >
+            <Typography component="h1" variant="h4" align="center">
+              Create your recipe
+            </Typography>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Recipe Info
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="recipeTitle"
+                  name="title"
+                  label="Recipe title"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  fullWidth
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="recipeDescription"
+                  name="description"
+                  label="Recipe description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  fullWidth
+                  variant="standard"
+                />
+              </Grid>
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Ingredients
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Ingredients"
+                  initialCount={1}
+                  Component={IngredientFormComponent}
+                  state={ingredients}
+                  setState={setIngredients}
+                  createNew={() => {
+                    return { name: "", description: "", amount: 0, unit: "" };
+                  }}
+                />
+              }
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Equipment
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Equipment"
+                  initialCount={1}
+                  Component={EquipmentFormComponent}
+                  state={equipment}
+                  setState={setEquipment}
+                  createNew={() => {
+                    return { name: "", description: "" };
+                  }}
+                />
+              }
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Steps
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Step"
+                  initialCount={1}
+                  Component={StepFormComponent}
+                  state={steps}
+                  setState={setSteps}
+                  createNew={() => {
+                    return { title: "", description: "" };
+                  }}
+                />
+              }
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Button variant="contained" onClick={handleSubmit}>
+              Create
+            </Button>
+          </Paper>
+        </Container>
+        <Snackbar
+          open={error != undefined}
+          autoHideDuration={6000}
+          onClose={() => setError(undefined)}
         >
-          <Typography component="h1" variant="h4" align="center">
-            Create your recipe
-          </Typography>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Recipe Info
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="recipeTitle"
-                name="title"
-                label="Recipe title"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                fullWidth
-                variant="standard"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="recipeDescription"
-                name="description"
-                label="Recipe description"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                fullWidth
-                variant="standard"
-              />
-            </Grid>
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Ingredients
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Ingredients"
-                initialCount={1}
-                Component={IngredientFormComponent}
-                state={ingredients}
-                setState={setIngredients}
-                createNew={() => {
-                  return { name: "", description: "", amount: 0, unit: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Equipment
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Equipment"
-                initialCount={1}
-                Component={EquipmentFormComponent}
-                state={equipment}
-                setState={setEquipment}
-                createNew={() => {
-                  return { name: "", description: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Steps
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Step"
-                initialCount={1}
-                Component={StepFormComponent}
-                state={steps}
-                setState={setSteps}
-                createNew={() => {
-                  return { title: "", description: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Button variant="contained" onClick={handleSubmit}>
-            Create
-          </Button>
-        </Paper>
-      </Container>
+          <Alert
+            onClose={() => setError(undefined)}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
       </ThemeProvider>
     </>
   );

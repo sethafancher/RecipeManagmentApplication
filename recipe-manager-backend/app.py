@@ -83,7 +83,7 @@ def delete_recipe(recipe_id):
 @app.route("/api/recipes/mine")
 @jwt_required()
 def get_my_recipes():
-    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
+    user_id = get_jwt_identity()
     connection = get_db_connection()
     recipes = connection.execute(
         'SELECT DISTINCT R.recipe_id ' +
@@ -100,7 +100,7 @@ def get_my_recipes():
 @app.route("/api/recipe", methods = ['POST'])
 @jwt_required()
 def create_recipe():
-    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
+    user_id = get_jwt_identity()
     recipe_dict = dict(request.get_json())
     seen = set()
     # check for empty recipe title
@@ -169,7 +169,7 @@ def login():
     user_id = [dict(i) for i in user_id]
     if len(user_id) == 0:
         return Response("Error: Wrong username or password", status=403, mimetype='application/json')
-    access_token = create_access_token(identity=str(user_id[0]), expires_delta=False)
+    access_token = create_access_token(identity=str(user_id[0]["user_id"]), expires_delta=False)
     connection.commit()
     connection.close()
     return jsonify({ "token": access_token})
@@ -180,14 +180,16 @@ def create_user():
     user_dict = dict(request.get_json())
     user_info = user_dict["user"]
     connection = get_db_connection()
+    user_id = None
     try:
-        connection.execute("INSERT INTO User (user_id, first_name, last_name, username, password)" +
-                            "VALUES (?, ?, ?, ?, ?);",
-                            (user_info["userId"],  user_info["firstName"], user_info["lastName"],
+        result = connection.execute("INSERT INTO User (first_name, last_name, username, password)" +
+                            "VALUES (?, ?, ?, ?);",
+                            (user_info["firstName"], user_info["lastName"],
                              user_info["username"],  user_dict["password"],))
+        user_id = result.lastrowid
     except: 
         return Response("Error: userId or username aready exists", status=409, mimetype='application/json')
-    access_token = create_access_token(identity=str(user_info["userId"]))
+    access_token = create_access_token(identity=str(user_id))
     connection.commit()
     connection.close()
     return jsonify({ "token": access_token })

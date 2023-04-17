@@ -64,8 +64,16 @@ const getRecipe = async (recipeId: number): Promise<Recipe> => {
   return (await axios.get<Recipe>(`${baseUrl}/api/recipe/${recipeId}`)).data;
 };
 
-const deleteRecipe = async (token: UserToken, recipeId: number): Promise<number> => {
-  return (await axios.delete<Recipe>(`${baseUrl}/api/recipe/${recipeId}`, getAuth(token))).status;
+const deleteRecipe = async (
+  token: UserToken,
+  recipeId: number
+): Promise<number> => {
+  return (
+    await axios.delete<Recipe>(
+      `${baseUrl}/api/recipe/${recipeId}`,
+      getAuth(token)
+    )
+  ).status;
 };
 
 // Token will arrive as a header with key "Authorization" and value "Bearer {TOKEN}"
@@ -99,10 +107,18 @@ const login = async (
 };
 
 const createUser = async (request: CreateUserRequest): Promise<UserToken> => {
-  return await axios.post(`${baseUrl}/api/user/create`, request);
+  let resp = await axios.post(`${baseUrl}/api/user/create`, request);
+  return (resp.data as LoginResponse).token;
 };
 
-export { getRecipe, deleteRecipe, getMyRecipes, createRecipe, login, createUser };
+export {
+  getRecipe,
+  deleteRecipe,
+  getMyRecipes,
+  createRecipe,
+  login,
+  createUser,
+};
 
 // /home
 // /recipe/{recipeId}

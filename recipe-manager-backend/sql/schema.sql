@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS Recipe_Equipment;
 DROP TABLE IF EXISTS Recipe_Step;
 
 CREATE TABLE User (
-    user_id INTEGER PRIMARY KEY,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
