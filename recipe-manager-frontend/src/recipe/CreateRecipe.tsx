@@ -6,7 +6,7 @@ import {
   Ingredient,
   Equipment,
 } from "../RecipeManagerClient";
-import Header from "../Header"
+import Header from "../Header";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -249,6 +249,35 @@ export default function CreateRecipe() {
   const [loginState, setLoginState] = useLoginState();
 
   const handleSubmit = () => {
+    if (!title || title.length === 0) {
+      // Require title
+    }
+    if (!description || description.length === 0) {
+      // Require Description
+    }
+    if (!ingredients || ingredients.length === 0) {
+      // Require at least one ingredient
+    } else {
+      for (let ingredient of ingredients) {
+        if (
+          ingredient.name === "" ||
+          ingredient.amount === 0 ||
+          ingredient.description == ""
+        ) {
+          // Require ingredients to be filled out
+        }
+      }
+    }
+    if (!steps || steps.length == 0) {
+      // Require at least one step
+    } else {
+      for (let step of steps) {
+        if (step.title == "" || step.description == "") {
+          // Require steps to be filled out
+        }
+      }
+    }
+    // Equipment is optional
     const newRecipe: Recipe = {
       title,
       description,
@@ -270,114 +299,114 @@ export default function CreateRecipe() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Header />
-      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-        >
-          <Typography component="h1" variant="h4" align="center">
-            Create your recipe
-          </Typography>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Recipe Info
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="recipeTitle"
-                name="title"
-                label="Recipe title"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                fullWidth
-                variant="standard"
-              />
+        <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+          <Paper
+            variant="outlined"
+            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+          >
+            <Typography component="h1" variant="h4" align="center">
+              Create your recipe
+            </Typography>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Recipe Info
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="recipeTitle"
+                  name="title"
+                  label="Recipe title"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  fullWidth
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="recipeDescription"
+                  name="description"
+                  label="Recipe description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  fullWidth
+                  variant="standard"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="recipeDescription"
-                name="description"
-                label="Recipe description"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                fullWidth
-                variant="standard"
-              />
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Ingredients
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Ingredients"
+                  initialCount={1}
+                  Component={IngredientFormComponent}
+                  state={ingredients}
+                  setState={setIngredients}
+                  createNew={() => {
+                    return { name: "", description: "", amount: 0, unit: "" };
+                  }}
+                />
+              }
             </Grid>
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Ingredients
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Ingredients"
-                initialCount={1}
-                Component={IngredientFormComponent}
-                state={ingredients}
-                setState={setIngredients}
-                createNew={() => {
-                  return { name: "", description: "", amount: 0, unit: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Equipment
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Equipment"
-                initialCount={1}
-                Component={EquipmentFormComponent}
-                state={equipment}
-                setState={setEquipment}
-                createNew={() => {
-                  return { name: "", description: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Typography variant="h6" gutterBottom>
-            Enter Steps
-          </Typography>
-          <Grid container spacing={3}>
-            {
-              <Dynamic
-                title="Step"
-                initialCount={1}
-                Component={StepFormComponent}
-                state={steps}
-                setState={setSteps}
-                createNew={() => {
-                  return { title: "", description: "" };
-                }}
-              />
-            }
-          </Grid>
-          <Box m={1} pt={1}>
-            <Divider />
-          </Box>
-          <Button variant="contained" onClick={handleSubmit}>
-            Create
-          </Button>
-        </Paper>
-      </Container>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Equipment
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Equipment"
+                  initialCount={1}
+                  Component={EquipmentFormComponent}
+                  state={equipment}
+                  setState={setEquipment}
+                  createNew={() => {
+                    return { name: "", description: "" };
+                  }}
+                />
+              }
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Enter Steps
+            </Typography>
+            <Grid container spacing={3}>
+              {
+                <Dynamic
+                  title="Step"
+                  initialCount={1}
+                  Component={StepFormComponent}
+                  state={steps}
+                  setState={setSteps}
+                  createNew={() => {
+                    return { title: "", description: "" };
+                  }}
+                />
+              }
+            </Grid>
+            <Box m={1} pt={1}>
+              <Divider />
+            </Box>
+            <Button variant="contained" onClick={handleSubmit}>
+              Create
+            </Button>
+          </Paper>
+        </Container>
       </ThemeProvider>
     </>
   );

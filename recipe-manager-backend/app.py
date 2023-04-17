@@ -83,7 +83,7 @@ def delete_recipe(recipe_id):
 @app.route("/api/recipes/mine")
 @jwt_required()
 def get_my_recipes():
-    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
+    user_id = ast.literal_eval(get_jwt_identity())
     connection = get_db_connection()
     recipes = connection.execute(
         'SELECT DISTINCT R.recipe_id ' +
@@ -100,7 +100,7 @@ def get_my_recipes():
 @app.route("/api/recipe", methods = ['POST'])
 @jwt_required()
 def create_recipe():
-    user_id = ast.literal_eval(get_jwt_identity())["user_id"]
+    user_id = ast.literal_eval(get_jwt_identity())
     recipe_dict = dict(request.get_json())
     seen = set()
     # check for empty recipe title

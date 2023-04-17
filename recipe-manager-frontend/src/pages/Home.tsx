@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useLoginState } from "../LoginState";
 import RecipePreview from "../recipe/RecipePreview";
 import Header from "../Header";
@@ -15,7 +15,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -24,6 +24,7 @@ const theme = createTheme();
 function Home() {
   const [loginState, setLoginState] = useLoginState();
   const [recipesState, setRecipesState] = useState<Recipe[]>();
+  const navigate = useNavigate();
   useEffect(() => {
     console.log(loginState);
     loginState &&
@@ -66,8 +67,7 @@ function Home() {
               color="text.secondary"
               paragraph
             >
-              Create new recipes and
-              share them with the world!
+              Create new recipes and share them with the world!
             </Typography>
             <Stack
               sx={{ pt: 4 }}
@@ -77,6 +77,15 @@ function Home() {
             >
               <Button href="/createrecipe" variant="contained">
                 Create New Recipe
+              </Button>
+              <Button
+                onClick={() => {
+                  setLoginState("");
+                  navigate("/");
+                }}
+                variant="contained"
+              >
+                Logout
               </Button>
             </Stack>
           </Container>
@@ -102,17 +111,26 @@ function Home() {
                       <Typography>{recipe.description}</Typography>
                     </CardContent>
                     <CardActions>
-                      <Button href={"/recipe/" + recipe.recipe_id} variant="outlined" size="small">
+                      <Button
+                        href={"/recipe/" + recipe.recipe_id}
+                        variant="outlined"
+                        size="small"
+                      >
                         View
                       </Button>
-                      <Button 
-                        onClick={() => {if (loginState) {deleteRecipe(loginState, recipe.recipe_id)}}}
+                      <Button
+                        onClick={() => {
+                          if (loginState) {
+                            deleteRecipe(loginState, recipe.recipe_id);
+                          }
+                        }}
                         href="/home"
-                        size="small" 
+                        size="small"
                         variant="outlined"
                         color="error"
-                        style={{ marginLeft: "auto "}}
-                        startIcon={<DeleteIcon />}>
+                        style={{ marginLeft: "auto " }}
+                        startIcon={<DeleteIcon />}
+                      >
                         Delete
                       </Button>
                     </CardActions>

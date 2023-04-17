@@ -5,6 +5,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
@@ -23,6 +25,7 @@ const theme = createTheme();
 export default function CreateAccount() {
   const navigate = useNavigate();
   let [loginState, setLoginState] = useLoginState();
+  let [error, setError] = React.useState(false);
   if (loginState !== undefined && loginState !== "") {
     return <Navigate to="/home" />;
   }
@@ -43,11 +46,16 @@ export default function CreateAccount() {
           userId: -1,
         },
         password: password,
-      }).then((session) => {
-        console.log(session);
-        setLoginState(session);
-        navigate("/home");
-      });
+      })
+        .then((session) => {
+          console.log(session);
+          setLoginState(session);
+          navigate("/home");
+        })
+        .catch((error) => {
+          // TODO: also validation
+          setError(true);
+        });
     } else {
       //TODO: validation
     }
@@ -139,6 +147,19 @@ export default function CreateAccount() {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        open={error}
+        autoHideDuration={6000}
+        onClose={() => setError(false)}
+      >
+        <Alert
+          onClose={() => setError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Error creating account, please try again.
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
